@@ -17,7 +17,7 @@ void Button::init()
 
 bool Button::isPressed()
 {
-    bool reading = digitalRead(this->pin);
+    byte reading = digitalRead(this->pin);
 
     if (reading != this->state)
     {

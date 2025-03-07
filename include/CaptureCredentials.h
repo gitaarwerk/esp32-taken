@@ -6,9 +6,9 @@ private:
 public:
     CaptureCredentials();
 
-    void initScreen();
-    
-    void offScren();
+    // void initScreen();
+
+    // void offScreen();
 
     void storeCaptive(String ssid, String portalId, String username, String password);
 };

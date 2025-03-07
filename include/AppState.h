@@ -1,21 +1,44 @@
-#include <string>
-
 #ifndef APPSTATE_H
 #define APPSTATE_H
 
-struct AppState
-{
-    // locales
-    bool isSleeping;
-    bool portalStarted = false;
-    std::string menuActive = "home";
+#include <string>
+#include <variant>
 
-    AppState() : isSleeping(false)
+class AppState
+{
+private:
+    std::string activeOption;
+    std::string activeScreen;
+    int highlightedOption;
+
+    // Portal
+    bool portalStarted;
+
+public:
+    AppState() : activeScreen("home"),
+                 activeOption(""),
+                 highlightedOption(-1),
+                 portalStarted(false)
     {
     }
+
+    void setPortalStarted(bool portalStarted);
+
+    bool getPortalStarted();
+
+    void setHighlightedOption(int highlightedOption);
+
+    int getHighlightedOption();
+
+    void setActiveScreen(std::string activeScreen);
+
+    std::string getActiveScreen();
+
+    void setActiveOption(std::string activeOption);
+
+    std::string getActiveOption();
 };
 
 extern AppState appState;
 
 #endif
-;

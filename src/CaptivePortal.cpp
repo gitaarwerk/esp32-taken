@@ -89,13 +89,23 @@ CaptivePortal::~CaptivePortal()
 bool CaptivePortal::start()
 {
   // your other setup stuff...
+  portal_ID = this->portalId;
+  portal_SSID = this->SSID;
+
   Serial.println();
-  Serial.println("Setting up AP Mode");
   if (!this->macAddress)
   {
     this->randomizeMacAddress();
   }
   esp_base_mac_addr_set(this->macAddress);
+  Serial.println("Setting up AP Mode");
+
+  Serial.println(this->SSID);
+  Serial.println(this->password);
+  Serial.println(this->channel);
+  Serial.println(this->hidden);
+  Serial.println(this->max_connection);
+
   WiFi.mode(WIFI_AP);
   WiFi.setTxPower(this->power);
   WiFi.softAPsetHostname(this->hostname.c_str());
@@ -106,14 +116,14 @@ bool CaptivePortal::start()
     return false;
   }
 
-  if (!WiFi.softAP(this->SSID, this->password, this->channel, this->hidden, this->max_connection))
+  if (!WiFi.softAP(portal_SSID.c_str(), this->password, this->channel, this->hidden, this->max_connection))
   {
-    Serial.println("Failed to start the AP");
+    Serial.println("Failed to start the access point");
     return false;
   }
 
-  portal_ID = this->portalId;
-  portal_SSID = this->SSID;
+  Serial.print("AP SSID: ");
+  Serial.println(portal_SSID);
   Serial.print("AP IP address: ");
   Serial.println(WiFi.softAPIP());
   Serial.println("Setting up Async WebServer");
@@ -126,7 +136,7 @@ bool CaptivePortal::start()
   server.begin();
   Serial.println("All Done!");
   this->active = true;
-  captureCredentials.initScreen();
+
   return true;
 }
 
@@ -138,13 +148,15 @@ void CaptivePortal::stop()
   WiFi.enableAP(false);
   WiFi.softAPdisconnect(true);
   this->active = false;
-  captureCredentials.offScren();
+  Serial.println("Captive Portal Stopped");
 };
 
 void CaptivePortal::restart(bool restart)
 {
   if (restart)
   {
+    Serial.println("Captive portal restarting");
+    delay(1000);
     this->stop();
     this->start();
   }
